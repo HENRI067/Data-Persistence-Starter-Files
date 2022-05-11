@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 /// <summary>
 /// this script show the best score in the menu screen when the game starts & the last named that was used
 /// 
@@ -12,11 +13,15 @@ public class MainManager : MonoBehaviour
 {
     public static MainManager Instance;
 
-    private string playerName;
-    private int playerScore;
-
+    public string playerName;
     private int bestScore;
     private string bestPlayer;
+
+    private string nameTyped;
+    [SerializeField] private GameObject textInput;
+    [SerializeField] private GameObject textDisplay;
+
+
 
     private void Awake()
     {
@@ -29,7 +34,8 @@ public class MainManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
         // </Setup>
-        LoadBestScore();
+        LoadName();
+        GetBestScore();
     }
 
 
@@ -39,40 +45,68 @@ public class MainManager : MonoBehaviour
 
 
 
-    ///<SaveFileHandler>
     [System.Serializable]
     class SaveData
     {
-        public string lastName;
-        public int lastScore;
-
         public string bestName;
         public int bestScore;
+        public string lastName;
     }
-    //method is called when player presses the "OK" button
-    public void SavePlayerName()
-    {
 
-    }
-    //save name is only called when the player beats the best score saved and loses in the game scene
-    public void SaveBestScore()
+
+    public void SaveName()
     {
-        if(FindSaveFile() == false)
+        nameTyped = textInput.GetComponent<TMP_Text>().text;
+        textDisplay.GetComponent<TMP_Text>().text = nameTyped;
+        playerName = nameTyped;
+
+        SaveData data = GetData();
+        data.lastName = playerName;
+        SaveTheData(data);
+    }
+    public void LoadName()
+    {
+        SaveData data = GetData();
+        playerName = data.lastName;
+        textDisplay.GetComponent<TMP_Text>().text = data.lastName;
+    }
+    private void GetBestScore()
+    {
+        SaveData data = GetData();
+        bestPlayer = data.bestName;
+        bestScore = data.bestScore;
+    }
+
+
+    //[SaveToJson]/[getSaveFromJson]
+    private void SaveTheData(SaveData data)
+    {
+        string dataPath = Application.persistentDataPath + "/savefile.json";
+
+        string json = JsonUtility.ToJson(data);
+        File.WriteAllText(dataPath, json);
+    }
+    private SaveData GetData()
+    {
+        SaveData data = null;
+        string dataPath = Application.persistentDataPath + "/savefile.json";
+
+        if (File.Exists(dataPath))
         {
-            SaveData data = new SaveData();
+            string json = File.ReadAllText(dataPath);
+            data = JsonUtility.FromJson<SaveData>(json);
         }
-    }
-    //load name is only called when the player opens the game
-    public void LoadBestScore() { }
-    //checks to see if a savefile exist
-    private bool FindSaveFile()
-    {
-        bool saveExists = false;
+        else if (File.Exists(dataPath) == false)
+        {
+            data = new SaveData();
+            data.bestName = "the Noob";
+            data.bestScore = 0;
+            data.lastName = playerName;
 
-        string location = Application.persistentDataPath + "/savefile.json";
-        if (File.Exists(location)) saveExists = true;
+            string json = JsonUtility.ToJson(data);
+            File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+        }
 
-        return saveExists;
+        return data;
     }
-    /// </SaveFileHandler>
 }
