@@ -1,31 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+/// <summary>
+/// this script show the best score in the menu screen when the game starts & the last named that was used
+/// 
+/// </summary>
 
 public class MainManager : MonoBehaviour
 {
-    //<MyCode>
     public static MainManager Instance;
-    // </MyCode>
-    /// <CourseCode>
-    public Brick BrickPrefab;
-    public int LineCount = 6;
-    public Rigidbody Ball;
 
-    public Text ScoreText;
-    public GameObject GameOverText;
-    
-    private bool m_Started = false;
-    private int m_Points;
-    
-    private bool m_GameOver = false;
-    /// </CourseCode>
+    private string playerName;
+    private int playerScore;
+
+    private int bestScore;
+    private string bestPlayer;
 
     private void Awake()
     {
-        //
+        //<Setup>
         if (Instance != null)
         {
             Destroy(this.gameObject);
@@ -33,61 +28,51 @@ public class MainManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
-        //
+        // </Setup>
+        LoadBestScore();
     }
 
-    void Start()
+
+
+
+
+
+
+
+    ///<SaveFileHandler>
+    [System.Serializable]
+    class SaveData
     {
-        
-        const float step = 0.6f;
-        int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
-        for (int i = 0; i < LineCount; ++i)
+        public string lastName;
+        public int lastScore;
+
+        public string bestName;
+        public int bestScore;
+    }
+    //method is called when player presses the "OK" button
+    public void SavePlayerName()
+    {
+
+    }
+    //save name is only called when the player beats the best score saved and loses in the game scene
+    public void SaveBestScore()
+    {
+        if(FindSaveFile() == false)
         {
-            for (int x = 0; x < perLine; ++x)
-            {
-                Vector3 position = new Vector3(-1.5f + step * x, 2.5f + i * 0.3f, 0);
-                var brick = Instantiate(BrickPrefab, position, Quaternion.identity);
-                brick.PointValue = pointCountArray[i];
-                brick.onDestroyed.AddListener(AddPoint);
-            }
+            SaveData data = new SaveData();
         }
     }
-
-    private void Update()
+    //load name is only called when the player opens the game
+    public void LoadBestScore() { }
+    //checks to see if a savefile exist
+    private bool FindSaveFile()
     {
-        if (!m_Started)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                m_Started = true;
-                float randomDirection = Random.Range(-1.0f, 1.0f);
-                Vector3 forceDir = new Vector3(randomDirection, 1, 0);
-                forceDir.Normalize();
+        bool saveExists = false;
 
-                Ball.transform.SetParent(null);
-                Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
-            }
-        }
-        else if (m_GameOver)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
-        }
-    }
+        string location = Application.persistentDataPath + "/savefile.json";
+        if (File.Exists(location)) saveExists = true;
 
-    void AddPoint(int point)
-    {
-        m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        return saveExists;
     }
-
-    public void GameOver()
-    {
-        m_GameOver = true;
-        GameOverText.SetActive(true);
-    }
+    /// </SaveFileHandler>
 }
