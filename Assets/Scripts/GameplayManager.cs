@@ -7,25 +7,28 @@ using UnityEngine.UI;
 ///It was named MainManager but I renamed it to GameplayManager
 public class GameplayManager : MonoBehaviour
 {
-   
+
+
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
+    public Text bestScoreText;
     public Text ScoreText;
     public GameObject GameOverText;
-    
+    public GameObject MenuButton;
+
     private bool m_Started = false;
     private int m_Points;
-    
+
     private bool m_GameOver = false;
-    
+
     void Start()
     {
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
-        
-        int[] pointCountArray = new [] {1,1,2,2,5,5};
+
+        int[] pointCountArray = new[] { 1, 1, 2, 2, 5, 5 };
         for (int i = 0; i < LineCount; ++i)
         {
             for (int x = 0; x < perLine; ++x)
@@ -65,13 +68,19 @@ public class GameplayManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = $"Score : {MainManager.Instance.playerName}[{m_Points}]";
     }
 
     public void GameOver()
     {
-
+        if(m_Points >= MainManager.Instance.bestScore)
+        {
+            MainManager.Instance.SaveBestScore(m_Points);
+            GameUIHandler.Instance.UpdateBestScore(m_Points);
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
+        MenuButton.SetActive(true);
     }
+
 }

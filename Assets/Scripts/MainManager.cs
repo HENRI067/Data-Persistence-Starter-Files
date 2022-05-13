@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 /// <summary>
 /// this script show the best score in the menu screen when the game starts & the last named that was used
@@ -14,12 +15,9 @@ public class MainManager : MonoBehaviour
     public static MainManager Instance;
 
     public string playerName;
-    private int bestScore;
-    private string bestPlayer;
+    public int bestScore;
+    public string bestPlayer;
 
-    private string nameTyped;
-    [SerializeField] private GameObject textInput;
-    [SerializeField] private GameObject textDisplay;
 
 
 
@@ -38,13 +36,6 @@ public class MainManager : MonoBehaviour
         GetBestScore();
     }
 
-
-
-
-
-
-
-
     [System.Serializable]
     class SaveData
     {
@@ -52,15 +43,10 @@ public class MainManager : MonoBehaviour
         public int bestScore;
         public string lastName;
     }
-
-
     public void SaveName()
     {
-        nameTyped = textInput.GetComponent<TMP_Text>().text;
-        textDisplay.GetComponent<TMP_Text>().text = nameTyped;
-        playerName = nameTyped;
-
         SaveData data = GetData();
+        MenuUIHandler.Instance.nameTyped = playerName;
         data.lastName = playerName;
         SaveTheData(data);
     }
@@ -68,8 +54,19 @@ public class MainManager : MonoBehaviour
     {
         SaveData data = GetData();
         playerName = data.lastName;
-        textDisplay.GetComponent<TMP_Text>().text = data.lastName;
+        MenuUIHandler.Instance.textDisplay.GetComponent<TMP_Text>().text = data.lastName;
     }
+    public void SaveBestScore(int score)
+    {
+        bestPlayer = playerName;
+
+        SaveData data = GetData();
+        data.bestName = playerName;
+        data.bestScore = score;
+        SaveTheData(data);
+        GetBestScore();
+    }
+    //Updates the best score values on this script on startup and when the player beats the last score
     private void GetBestScore()
     {
         SaveData data = GetData();
@@ -77,8 +74,7 @@ public class MainManager : MonoBehaviour
         bestScore = data.bestScore;
     }
 
-
-    //[SaveToJson]/[getSaveFromJson]
+    //Save SaveData to .json
     private void SaveTheData(SaveData data)
     {
         string dataPath = Application.persistentDataPath + "/savefile.json";
@@ -86,6 +82,7 @@ public class MainManager : MonoBehaviour
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(dataPath, json);
     }
+    //Get SaveData from .json
     private SaveData GetData()
     {
         SaveData data = null;
@@ -109,4 +106,5 @@ public class MainManager : MonoBehaviour
 
         return data;
     }
+
 }
