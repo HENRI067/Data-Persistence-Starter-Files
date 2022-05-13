@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.UI;
+using UnityEngine;
+using System.IO;
 using TMPro;
-/// <summary>
-/// this script show the best score in the menu screen when the game starts & the last named that was used
-/// 
-/// </summary>
 
 public class MainManager : MonoBehaviour
 {
@@ -24,7 +20,7 @@ public class MainManager : MonoBehaviour
         if (Instance != null)
         {
             Destroy(this.gameObject);
-            return;
+            
         }
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
@@ -43,8 +39,9 @@ public class MainManager : MonoBehaviour
     public void SaveName()
     {
         SaveData data = GetData();
-        MenuUIHandler.Instance.nameTyped = playerName;
         data.lastName = playerName;
+
+        MenuUIHandler.Instance.nameTyped = playerName;
         SaveTheData(data);
     }
     public void LoadName()
@@ -61,9 +58,9 @@ public class MainManager : MonoBehaviour
         data.bestName = playerName;
         data.bestScore = score;
         SaveTheData(data);
+
         GetBestScore();
     }
-    //Updates the best score values on this script on startup and when the player beats the last score
     private void GetBestScore()
     {
         SaveData data = GetData();

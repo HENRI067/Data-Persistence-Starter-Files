@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using TMPro;
 #if UNITY_EDITOR

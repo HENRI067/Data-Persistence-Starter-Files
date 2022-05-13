@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
+using UnityEngine;
 using TMPro;
+
 public class GameUIHandler : MonoBehaviour
 {
     public static GameUIHandler Instance;
@@ -18,11 +19,11 @@ public class GameUIHandler : MonoBehaviour
         if (Instance != null)
         {
             Destroy(this.gameObject);
-            return;
+            
         }
         Instance = this;
         // </Setup>
-        StartCoroutine(UISetup());
+        UISetup();
     }
 
     public void UpdateBestScore(int score)
@@ -30,9 +31,9 @@ public class GameUIHandler : MonoBehaviour
         bestScoreText.text = $"Best Score :{MainManager.Instance.bestPlayer}[{MainManager.Instance.bestScore}]";
     }
 
-    IEnumerator UISetup()
+
+    private void UISetup()
     {
-        yield return new WaitForSeconds(0.1f);
         scoreText.text = $"Score : {MainManager.Instance.playerName}[0]";
         bestScoreText.text = $"Best Score :{MainManager.Instance.bestPlayer}[{MainManager.Instance.bestScore}]";
     }

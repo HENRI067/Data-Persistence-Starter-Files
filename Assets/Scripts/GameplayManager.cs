@@ -1,8 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
+using UnityEngine;
+
 ///CourseCode
 ///It was named MainManager but I renamed it to GameplayManager
 public class GameplayManager : MonoBehaviour
