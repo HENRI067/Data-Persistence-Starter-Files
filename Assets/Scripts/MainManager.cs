@@ -20,7 +20,7 @@ public class MainManager : MonoBehaviour
         if (Instance != null)
         {
             Destroy(this.gameObject);
-            
+            return;
         }
         Instance = this;
         DontDestroyOnLoad(this.gameObject);
@@ -67,8 +67,6 @@ public class MainManager : MonoBehaviour
         bestPlayer = data.bestName;
         bestScore = data.bestScore;
     }
-
-
     //Save SaveData to .json
     private void SaveTheData(SaveData data)
     {

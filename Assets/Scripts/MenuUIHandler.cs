@@ -18,11 +18,6 @@ public class MenuUIHandler : MonoBehaviour
     private void Awake()
     {
         //<Setup>
-        if (Instance != null)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
         Instance = this;
         StartCoroutine(UISetup());
         // </Setup>
