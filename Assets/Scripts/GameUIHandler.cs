@@ -21,7 +21,6 @@ public class GameUIHandler : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(this.gameObject);
         // </Setup>
         StartCoroutine(UISetup());
     }

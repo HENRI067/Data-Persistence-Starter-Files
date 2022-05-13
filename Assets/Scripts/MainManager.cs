@@ -18,9 +18,6 @@ public class MainManager : MonoBehaviour
     public int bestScore;
     public string bestPlayer;
 
-
-
-
     private void Awake()
     {
         //<Setup>
@@ -73,6 +70,7 @@ public class MainManager : MonoBehaviour
         bestPlayer = data.bestName;
         bestScore = data.bestScore;
     }
+
 
     //Save SaveData to .json
     private void SaveTheData(SaveData data)
